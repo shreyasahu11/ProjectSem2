@@ -1,61 +1,86 @@
-document.addEventListener("DOMContentLoaded", function () {
+// Select elements
+const products = document.querySelectorAll(".product");
+const cartButton = document.querySelector(".nav-actions button:last-child");
+const searchInput = document.querySelector(".search-box input");
+const categoryButtons = document.querySelectorAll(".category");
 
-    let cartCount = 0;
+let cartCount = 0;
 
-    const cartBtn = document.getElementById("cart-btn");
-    const searchBox = document.getElementById("search-box");
+// ==================== ADD TO CART ====================
+const addButtons = document.querySelectorAll(".product button");
 
-    const products = document.querySelectorAll(".product");
-    const categories = document.querySelectorAll(".category");
-    const addButtons = document.querySelectorAll(".product button");
-
-    // ================= CART =================
-    addButtons.forEach(button => {
-        button.addEventListener("click", function () {
-            cartCount++;
-            cartBtn.textContent = `Cart (${cartCount})`;
-        });
+addButtons.forEach(button => {
+    button.addEventListener("click", () => {
+        cartCount++;
+        cartButton.textContent = `Cart (${cartCount})`;
     });
+});
 
-    // ================= SEARCH =================
-    searchBox.addEventListener("keyup", function () {
-        const value = searchBox.value.toLowerCase();
+
+// ==================== SEARCH FUNCTION ====================
+searchInput.addEventListener("keyup", () => {
+    let searchValue = searchInput.value.toLowerCase();
+
+    products.forEach(product => {
+        let productName = product.querySelector("h4").textContent.toLowerCase();
+
+        if (productName.includes(searchValue)) {
+            product.style.display = "block";
+        } else {
+            product.style.display = "none";
+        }
+    });
+});
+
+
+// ==================== CATEGORY FILTER ====================
+categoryButtons.forEach(category => {
+    category.addEventListener("click", () => {
+        let selectedCategory = category.textContent.toLowerCase();
 
         products.forEach(product => {
-            const productName = product.querySelector("h4").textContent.toLowerCase();
+            let productName = product.querySelector("h4").textContent.toLowerCase();
 
-            if (productName.includes(value)) {
+            if (
+                selectedCategory === "fruits" &&
+                productName.includes("apple")
+            ) {
                 product.style.display = "block";
-            } else {
+            }
+            else if (
+                selectedCategory === "vegetables" &&
+                productName.includes("tomato")
+            ) {
+                product.style.display = "block";
+            }
+            else if (
+                selectedCategory === "dairy" &&
+                (productName.includes("milk") || productName.includes("bread"))
+            ) {
+                product.style.display = "block";
+            }
+            else if (
+                selectedCategory === "snacks" &&
+                (
+                    productName.includes("chips") ||
+                    productName.includes("maggi") ||
+                    productName.includes("dairymilk") ||
+                    productName.includes("thums up")
+                )
+            ) {
+                product.style.display = "block";
+            }
+            else {
                 product.style.display = "none";
             }
         });
     });
+});
 
-    // ================= CATEGORY FILTER =================
-    categories.forEach(category => {
-        category.addEventListener("click", function () {
-            const selected = category.textContent.toLowerCase();
 
-            products.forEach(product => {
-                const name = product.querySelector("h4").textContent.toLowerCase();
-
-                if (
-                    (selected === "fruits" && name === "apple") ||
-                    (selected === "vegetables" && name === "tomato") ||
-                    (selected === "dairy" && (name === "milk" || name === "bread")) ||
-                    (selected === "snacks" &&
-                        (name === "chips" ||
-                         name === "dairymilk" ||
-                         name === "thums up" ||
-                         name === "maggi"))
-                ) {
-                    product.style.display = "block";
-                } else {
-                    product.style.display = "none";
-                }
-            });
-        });
+// ==================== SHOW ALL PRODUCTS ON DOUBLE CLICK ====================
+document.querySelector(".products h2").addEventListener("dblclick", () => {
+    products.forEach(product => {
+        product.style.display = "block";
     });
-
 });
